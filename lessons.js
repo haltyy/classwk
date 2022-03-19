@@ -1,13 +1,13 @@
 let lessons = [
-  {
-    "id": 1001,
-    "subject": "Math",
-    "price": 25.00,
-    "location":"London",
-    "image": "images/math.png",
-    "availableInventory": 5,
-    
-  },
+    {
+      "id": 1001,
+      "subject": "Math",
+      "price": 25.00,
+      "location":"London",
+      "image": "images/math.png",
+      "availableInventory": 5,
+      
+    },
     {
       "id": 1002,
       "subject": "Math",

@@ -17,7 +17,7 @@
             <header>
                 <h1 v-text="sitename"></h1>
                 <button v-if="cart.length > 0" @click='showCheckout'> {{cart.length}} <span
-                        class="fas fa-cart-plus"></span>Checkout</button>
+                        class="fas fa-cart-plus"></span>My Cart</button>
             </header>
         </div>
         <hr>
@@ -71,12 +71,12 @@
                                     <div style="width: auto;"> </div>
                                 </div>
                                 <hr style="width: 100%">
-                                <div class="cart__item" v-for="(item, index) in cart" :key="`cart--${index}`">
-                                    <div style="width: auto;"><img :src="item.image" alt=""></div>
-                                    <div>{{item.subject}}</div>
-                                    <div>{{item.location}}</div>
-                                    <div>{{item.price}}</div>
-                                    <div style="width: auto;"><button @click="removeToCart(item)"><i style="color:red;"
+                                <div class="cart__item" v-for="lessons in cart">
+                                    <div style="width: auto;"><img :src="lessons.image" alt=""></div>
+                                    <div>{{lessons.subject}}</div>
+                                    <div>{{lessons.location}}</div>
+                                    <div>{{lessons.price}}</div>
+                                    <div style="width: auto;"><button @click="removeToCart(lessons)"><i style="color:red;"
                                                 class="fa fa-minus" aria-hidden="true"></i></button></div>
                                 </div>
                                 <div v-if="!cart.length > 0" class="cart__item"
@@ -85,26 +85,27 @@
                                         List Empty</div>
                                 </div>
                                 <div class="title-bar">
-                                    <h4>Total Amount: {{total}}</h4>
-                                </div>
+                                <h4>Total Amount: {{total}}</h4>
+                            </div>
                             </div>
                             <hr>
                             <div>
                                 <h3>User Details</h3>
-                                <form @submit.prevent="submit">
-                                    <div>
-                                        <label for="name">Name</label>
-                                        <input v-model="user.name" type="text" required>
-                                        
-                                    </div>
-                                    <div>
-                                        <label for="name">Phone</label>
-                                        <input v-model="user.number" type="tel" required>
-                                    </div>
-                                    <input type="submit" value="Checkout">
-                                    <button v-on:click="submit">Place Order</button>
-
-                                </form>
+                                <div class="container ">
+                                    <form id="submit-button" class="container d-flex justify-content-end was-validated" v-on:submit="submit">
+                                        <div class="row col-8 d-flex justify-content-end">
+                                            <div class="col">
+                                                <input type="text" class="form" placeholder="Enter Name" required>
+                                            </div>
+                                            <div class="col">
+                                                <input type="number" class="form" placeholder="Enter Phone Number" required>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <input type="submit" class="cart__item button" value="Checkout">
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -119,7 +120,7 @@
             el: '#app',
             data: {
                 sitename: 'After School Lessons',
-                lessons: [],
+                lessons: lessons,
                 cart: [],
                 showProduct: false,
                 order: {
@@ -128,40 +129,38 @@
                 },
                 sort: 'ascending',
                 type: '',
-                user: {
-                    name: '',
-                    number: ''
-                }
+               
             },
             methods: {
-                addToCart(lesson) {
-                    this.lessons.find(item => item.id == lesson.id).availableInventory -= 1;
-                    this.cart.push({ cartId: (this.cart.length + 1), ...lesson });
+                addToCart(lessons) {
+                    // this.lessons.find(item => item.id == lesson.id).availableInventory -= 1;
+                    // this.cart.push({ cartId: (this.cart.length + 1), ...lesson });
+                    this.cart.push(lessons);
+                    return lessons.availableInventory --;
                 },
-                removeToCart(lesson) {
-                    if (confirm('Do you want to delete this?')) {
-                        this.cart = [...this.cart].filter(item => item.cartId != lesson.cartId)
+                cartCount(lessons) {
+                    let count = 0;
+                    for (let i = 0; i < this.cart.length; i++) {
+                        if (this.cart[i] === id) {
+                            count++;
+                        }
                     }
+                    return count;
+                },
+                removeToCart(lessons) {
+                    if (confirm('Do you want to delete this?')) {
+                        this.cart.splice(this.cart.indexOf(lessons), 1);
+                        return lessons.availableInventory ++;
+                        // this.cart = [...this.cart].filter(item => item.cartId != lesson.cartId)
+                    }                
                 },
                 showCheckout() {
                     this.showProduct = !this.showProduct;
                 },
                 submit() {
-                    if (this.phonenumber(this.user.number)) {
                         alert('Order submited.')
-                        console.log(this.user);
-                    }
+
                 },
-                phonenumber(number) {
-                    let phoneno = /^\d{11}$/;
-                    if ((number.match(phoneno))) {
-                        return true;
-                    }
-                    else {
-                        alert("Phone number incorrect.");
-                        return false;
-                    }
-                }
 
             },
             computed: {
